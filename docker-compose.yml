@@ -1,0 +1,60 @@
+services:
+  experiment-base:
+    build: &experiment_build
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: 3.12
+    volumes: &volumes
+      - ./data:/data
+    hostname: base
+    environment: &base_env
+      DATA_OWNER: &owner 1000:1000
+      MODEL_ID: "openai/clip-vit-base-patch32"
+      DATASET_NAME: "frgfm/imagenette"
+      DATASET_CONFIG: "full_size"
+      DATASET_SPLIT: "validation"
+      
+  experiment-large:
+    build: *experiment_build
+    volumes: *volumes
+    hostname: large
+    environment:
+      <<: *base_env
+      MODEL_ID: "openai/clip-vit-large-patch14"
+      SAMPLE_SIZE: "200"
+      BATCH_SIZE: "32"
+      
+  experiment-custom-prompt:
+    build: *experiment_build
+    volumes: *volumes
+    hostname: prompt
+    environment:
+      <<: *base_env
+      PROMPT: "a photograph of a natural landscape"
+      TOP_K: "10"
+      SAMPLE_SIZE: "150"
+      
+  experiment-extended:
+    build: *experiment_build
+    volumes: *volumes
+    hostname: extended
+    environment:
+      <<: *base_env
+      MODEL_ID: "openai/clip-vit-base-patch32"
+      SAMPLE_SIZE: "300"
+      BATCH_SIZE: "16"
+      TOP_K: "15"
+      RANDOM_SEED: "42"
+      
+  experiment-small:
+    build: *experiment_build
+    volumes: *volumes
+    hostname: small
+    environment:
+      <<: *base_env
+      MODEL_ID: "openai/clip-vit-base-patch32"
+      SAMPLE_SIZE: "50"
+      BATCH_SIZE: "8"
+      TOP_K: "3"
+      PROMPT: "a close-up portrait"

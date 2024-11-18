@@ -1,0 +1,8 @@
+tensorflow
+tf-keras
+transformers
+datasets
+Pillow
+tqdm
+pyyaml
+numpy
